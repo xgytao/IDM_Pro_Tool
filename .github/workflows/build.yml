@@ -1,0 +1,25 @@
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with csc.exe
+        shell: cmd
+        run: '"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /optimize+ /platform:x64 /codepage:65001 /lib:"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\WPF" /r:System.dll /r:System.Core.dll /r:Microsoft.CSharp.dll /r:System.Xaml.dll /r:WindowsBase.dll /r:PresentationCore.dll /r:PresentationFramework.dll /win32icon:src\app.ico /win32manifest:src\app.manifest /out:IDM_Pro_Tool.exe src\Program.cs'
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IDM_Pro_Tool
+          path: |
+            IDM_Pro_Tool.exe
+            app_icon.png
